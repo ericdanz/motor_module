@@ -65,14 +65,16 @@ def not_found(error):
     return make_response(jsonify({'error','Not found'}),404)
 
 @app.route('/<string:resource_name>', methods = ['PUT'])
-def put_vel_des():
+def put_vel_des(resource_name):
+    resource = [res for res in motor_state if res['name'] == resource_name]
     if not request.json or not 'value' in request.json:
         abort(400)   
     #in the future make a regex that looks for w
-    if motor_state['name'==resource_name]['flags'] == 'rw':
-        motor_state['name'==resource_name]['value'] = request.json['value']
-    else:
-        abort(400)
+    #if motor_state['name'==resource_name]['flags'] == 'rw':
+    resource[0]['value'] = request.json.get('value',resource[0]['value'])
+    
+    #else:
+    #    abort(400)
     return jsonify({resource_name: resource[0]}), 201
 
 if __name__ == "__main__":
